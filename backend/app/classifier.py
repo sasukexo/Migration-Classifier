@@ -183,13 +183,51 @@ def classify_os(os_string):
         )
 
     rules = MGN_RULES.get(family)
+    # ------------------------------------------------
+# ⭐ SPECIAL RULES (MUST RUN BEFORE ANYTHING ELSE)
+# ------------------------------------------------
 
-    if not rules:
-        return decision(
-            "NEEDS_REVIEW",
-            "HIGH",
-            "No MGN rules defined for this OS"
-        )
+    special_rules = rules.get("special_rules", {})
+
+    if version in special_rules:
+
+        rule = special_rules[version]
+
+        # Example: SLES 11 requires SP4+
+        if "min_sp" in rule:
+
+            sp = extract_service_pack(os_lower)
+
+            # 🚨 SP NOT FOUND → NEEDS REVIEW
+            if sp is None:
+                return decision(
+                    "NEEDS_REVIEW",
+                    "HIGH",
+                    f"{family.upper()} {int(version)} requires SP{rule['min_sp']}+ — Service Pack not detected"
+                )
+
+            # 🚨 SP TOO LOW → REBUILD
+            if sp < rule["min_sp"]:
+                return decision(
+                    "REBUILD_REQUIRED",
+                    "CRITICAL",
+                    f"{family.upper()} {int(version)} SP{sp} is not supported by AWS MGN"
+                )
+
+            # ✅ SP OK
+            return decision(
+                "MGN_SUPPORTED",
+                "LOW",
+                f"{family.upper()} {int(version)} SP{sp} supported by AWS MGN"
+            )
+
+
+        if not rules:
+            return decision(
+                "NEEDS_REVIEW",
+                "HIGH",
+                "No MGN rules defined for this OS"
+            )
     
     
 
