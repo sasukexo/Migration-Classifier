@@ -127,6 +127,14 @@ def vm_import_supported(family):
 
     return False
 
+def extract_service_pack(os_string):
+
+    match = re.search(r"sp\s?(\d+)", os_string.lower())
+
+    if match:
+        return int(match.group(1))
+
+    return None
 
 # ------------------------------------------------
 # MAIN CLASSIFIER
@@ -182,6 +190,8 @@ def classify_os(os_string):
             "HIGH",
             "No MGN rules defined for this OS"
         )
+    
+    
 
     # ------------------------------------------------
     # WINDOWS
@@ -222,7 +232,29 @@ def classify_os(os_string):
             "HIGH",
             "Not supported by MGN — use VM Import/Export"
         )
+    if family == "sles" and version == 11:
 
+        sp = extract_service_pack(os_lower)
+
+        if sp is None:
+            return decision(
+                "ACTION_REQUIRED",
+                "HIGH",
+                "SLES 11 requires SP4+ — Service Pack not detected"
+            )
+
+        if sp < 4:
+            return decision(
+                "REBUILD_REQUIRED",
+                "CRITICAL",
+                f"SLES 11 SP{sp} is not supported by AWS MGN"
+            )
+
+        return decision(
+            "MGN_SUPPORTED",
+            "LOW",
+            "SLES 11 SP4+ supported by AWS MGN"
+        )
     # ------------------------------------------------
     # ⭐ LINUX (THIS IS THE BIG FIX)
     # ------------------------------------------------
@@ -274,3 +306,8 @@ def classify_os(os_string):
         "UNKNOWN",
         "Unable to determine migration path"
     )
+    # ------------------------------------------------
+# ⭐ SLES SPECIAL RULE (CRITICAL)
+# ------------------------------------------------
+
+    
