@@ -84,6 +84,8 @@ rocky:
 sles:
   supported_range: [12,15]
 
-  conditional:
-    - 11
+  special_rules:
+    11:
+      min_sp: 4
+
 
