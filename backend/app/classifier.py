@@ -2,8 +2,6 @@ import re
 from app.rules_loader import load_rules
 
 
-
-
 # ------------------------------------------------
 # LOAD RULES
 # ------------------------------------------------
@@ -17,7 +15,6 @@ VMIE_RULES = load_rules("rules/vmie_rules.yaml")
 # ------------------------------------------------
 
 def strategy_map(decision):
-
     return {
         "MGN_SUPPORTED": "REHOST",
         "MGN_SUPPORTED_WITH_CONDITION": "REHOST_WITH_UPGRADE",
@@ -44,8 +41,6 @@ def decision(type, risk, reason):
 def normalize_family(os_string: str):
 
     os_string = os_string.lower()
-
-    # ORDER MATTERS (more specific first)
 
     if "red hat" in os_string or "rhel" in os_string:
         return "rhel"
@@ -78,8 +73,9 @@ def normalize_family(os_string: str):
 
 
 # ------------------------------------------------
-# VERSION EXTRACTION (SAFE)
+# VERSION EXTRACTION (SAFE + NORMALIZED)
 # ------------------------------------------------
+
 def extract_version(os_string):
 
     os_string = os_string.lower()
@@ -90,42 +86,23 @@ def extract_version(os_string):
     # Remove brackets
     os_string = re.sub(r"\(.*?\)", "", os_string)
 
-    # ⭐ HANDLE WINDOWS R2 FIRST
+    # ⭐ Handle Windows R2
     if "r2" in os_string:
-
         year_match = re.search(r"20\d{2}", os_string)
-
         if year_match:
-            return float(year_match.group()) + 0.1
-            # Example:
-            # 2008 -> 2008.1
-            # So it becomes newer than base 2008
+            return int(year_match.group()) + 1  # treat R2 as newer
 
-    # Normal extraction
     match = re.search(r"\b(20\d{2}|\d{1,2}\.\d+|\d{1,2})\b", os_string)
 
     if not match:
         return None
 
-    return float(match.group())
+    return int(float(match.group()))  # normalize ALWAYS
 
 
 # ------------------------------------------------
-# VM IMPORT SUPPORT CHECK
+# SERVICE PACK EXTRACTION
 # ------------------------------------------------
-
-def vm_import_supported(family):
-
-    windows = VMIE_RULES.get("windows", {})
-    linux = VMIE_RULES.get("linux_families_supported", [])
-
-    if family == "windows":
-        return True
-
-    if family in linux:
-        return True
-
-    return False
 
 def extract_service_pack(os_string):
 
@@ -136,14 +113,31 @@ def extract_service_pack(os_string):
 
     return None
 
+
+# ------------------------------------------------
+# VM IMPORT SUPPORT CHECK
+# ------------------------------------------------
+
+def vm_import_supported(family):
+
+    if family == "windows":
+        return True
+
+    return family in VMIE_RULES.get("linux_families_supported", [])
+
+
 # ------------------------------------------------
 # MAIN CLASSIFIER
 # ------------------------------------------------
+
 def classify_os(os_string):
 
     os_lower = os_string.lower()
 
-    # HARD BLOCK
+    # ------------------------------------------------
+    # HARD BLOCK — 32bit Linux
+    # ------------------------------------------------
+
     if "32-bit" in os_lower and "windows" not in os_lower:
         return decision(
             "REBUILD_REQUIRED",
@@ -154,19 +148,18 @@ def classify_os(os_string):
     # Clean metadata
     os_lower = re.sub(r"\(.*?\)", "", os_lower)
 
-    junk_phrases = ["or later", "datacenter", "standard", "enterprise"]
+    junk = ["or later", "datacenter", "standard", "enterprise"]
 
-    for phrase in junk_phrases:
-        os_lower = os_lower.replace(phrase, "")
+    for j in junk:
+        os_lower = os_lower.replace(j, "")
 
-    # Detect
+    # ------------------------------------------------
+    # DETECT FAMILY + VERSION
+    # ------------------------------------------------
+
     family = normalize_family(os_lower)
     version = extract_version(os_lower)
 
-    # ✅ DEBUG — KEEP THIS HERE (inside function!)
-    # print(f"DEBUG → OS={os_string} | family={family} | version={version}")
-
-    # Unknown OS
     if not family:
         return decision(
             "NEEDS_REVIEW",
@@ -174,7 +167,6 @@ def classify_os(os_string):
             "Unknown OS — manual validation required"
         )
 
-    # Missing version
     if version is None:
         return decision(
             "ACTION_REQUIRED",
@@ -183,51 +175,55 @@ def classify_os(os_string):
         )
 
     rules = MGN_RULES.get(family)
-    # ------------------------------------------------
-# ⭐ SPECIAL RULES (MUST RUN BEFORE ANYTHING ELSE)
-# ------------------------------------------------
 
-   # ------------------------------------------------
-# SPECIAL RULES (HIGHEST PRIORITY)
-# ------------------------------------------------
+    if not rules:
+        return decision(
+            "NEEDS_REVIEW",
+            "HIGH",
+            "No MGN rules found for this OS"
+        )
+
+    # ====================================================
+    # ⭐⭐⭐ SPECIAL RULES — HIGHEST PRIORITY
+    # ====================================================
 
     special_rules = rules.get("special_rules", {})
+    version_key = int(version)
 
-    if version in special_rules:
+    if version_key in special_rules:
 
-        rule = special_rules[version]
+        rule = special_rules[version_key]
 
         if "min_sp" in rule:
 
             sp = extract_service_pack(os_lower)
 
-            # 🚨 SP missing → NEEDS REVIEW
+            # Missing SP → NEEDS REVIEW
             if sp is None:
                 return decision(
                     "NEEDS_REVIEW",
                     "HIGH",
-                    f"SLES {int(version)} requires SP{rule['min_sp']}+ — Service Pack not detected"
+                    f"{family.upper()} {version} requires SP{rule['min_sp']}+ — Service Pack not detected"
                 )
 
-            # 🚨 SP too low → NOT supported
+            # SP too low → rebuild
             if sp < rule["min_sp"]:
                 return decision(
                     "REBUILD_REQUIRED",
                     "CRITICAL",
-                    f"SLES {int(version)} SP{sp} is not supported by AWS MGN"
+                    f"{family.upper()} {version} SP{sp} is not supported by AWS MGN"
                 )
 
-            # ✅ SP valid
+            # Valid SP
             return decision(
                 "MGN_SUPPORTED",
                 "LOW",
-                f"SLES {int(version)} SP{sp} supported by AWS MGN"
+                f"{family.upper()} {version} SP{sp} supported by AWS MGN"
             )
 
-
-    # ------------------------------------------------
-    # WINDOWS
-    # ------------------------------------------------
+    # ====================================================
+    # WINDOWS LOGIC
+    # ====================================================
 
     if family == "windows":
 
@@ -245,6 +241,7 @@ def classify_os(os_string):
                 )
 
         else:
+
             if version in rules.get("client_supported", []):
                 return decision(
                     "MGN_SUPPORTED",
@@ -264,34 +261,11 @@ def classify_os(os_string):
             "HIGH",
             "Not supported by MGN — use VM Import/Export"
         )
-    if family == "sles" and version == 11:
 
-        sp = extract_service_pack(os_lower)
+    # ====================================================
+    # LINUX SUPPORT — MINOR RANGES FIRST
+    # ====================================================
 
-        if sp is None:
-            return decision(
-                "ACTION_REQUIRED",
-                "HIGH",
-                "SLES 11 requires SP4+ — Service Pack not detected"
-            )
-
-        if sp < 4:
-            return decision(
-                "REBUILD_REQUIRED",
-                "CRITICAL",
-                f"SLES 11 SP{sp} is not supported by AWS MGN"
-            )
-
-        return decision(
-            "MGN_SUPPORTED",
-            "LOW",
-            "SLES 11 SP4+ supported by AWS MGN"
-        )
-    # ------------------------------------------------
-    # ⭐ LINUX (THIS IS THE BIG FIX)
-    # ------------------------------------------------
-
-    # ✅ FIRST — check minor ranges
     if "supported_minor_ranges" in rules:
 
         for low, high in rules["supported_minor_ranges"]:
@@ -302,7 +276,7 @@ def classify_os(os_string):
                     "Supported by AWS MGN"
                 )
 
-    # ✅ THEN check normal range
+    # Standard range
     if "supported_range" in rules:
 
         low, high = rules["supported_range"]
@@ -322,9 +296,9 @@ def classify_os(os_string):
             "Supported but nearing deprecation"
         )
 
-    # ------------------------------------------------
-    # VM IMPORT
-    # ------------------------------------------------
+    # ====================================================
+    # VM IMPORT FALLBACK
+    # ====================================================
 
     if vm_import_supported(family):
         return decision(
@@ -333,13 +307,9 @@ def classify_os(os_string):
             "Not supported by MGN — use VM Import/Export"
         )
 
+    # Final safety
     return decision(
         "NEEDS_REVIEW",
         "UNKNOWN",
         "Unable to determine migration path"
     )
-    # ------------------------------------------------
-# ⭐ SLES SPECIAL RULE (CRITICAL)
-# ------------------------------------------------
-
-    
