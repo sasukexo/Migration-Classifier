@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: "https://orthodox-marie-jeanne-aswinxo-b6a366c1.koyeb.app",
 });
 
 export const uploadCSV = async (file: File) => {
