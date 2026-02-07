@@ -42,20 +42,65 @@
 ------------------------------ */
 
 body {
-  background: var(--bg);
-  color: var(--text-main);
+  margin: 0;
+
+  background: linear-gradient(
+    180deg,
+    #f8faff 0%,
+    #eef2ff 100%
+  );
+
+  font-family: Inter, sans-serif;
 }
+
+.topbar {
+
+  height: 70px;
+  background: white;
+  border-bottom: 1px solid #e6eaf0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 48px;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.nav-right {
+  color: #6b7280;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 60px 30px;
+}
+
+.hero-title {
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.hero-sub {
+  margin-top: 10px;
+  color: #6b7280;
+  margin-bottom: 40px;
+}
+
 
 /* ------------------------------
    APP CONTAINER
 ------------------------------ */
 
-.app-container {
-  max-width: 1400px;
-  margin: auto;
- padding: 64px 40px;
-
-}
 
 /* ------------------------------
    TYPOGRAPHY

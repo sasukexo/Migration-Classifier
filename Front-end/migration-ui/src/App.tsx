@@ -5,21 +5,14 @@ import VMTable from "./components/VMTable";
 
 function App() {
 
-  // ALL response data
   const [data, setData] = useState<any>(null);
-
-  // Filtered VMs shown in table
   const [filteredVMs, setFilteredVMs] = useState<any[]>([]);
 
-
-  // Called after CSV upload
   const handleUpload = (response: any) => {
     setData(response);
-    setFilteredVMs(response.data); // show all initially
+    setFilteredVMs(response.data);
   };
 
-
-  // Filter when dashboard card clicked
   const filterVMs = (decision: string | null) => {
 
     if (!decision) {
@@ -34,34 +27,43 @@ function App() {
     setFilteredVMs(filtered);
   };
 
-
   return (
-    <div
-      style={{
-        padding: 40,
-        background: "#f7f9fc",
-        minHeight: "100vh",
-        fontFamily: "Inter, sans-serif"
-      }}
-    >
-      <h1 style={{ marginBottom: 30 }}>
-        🚀 Migration Classifier Dashboard
-      </h1>
+    <>
+      {/* 🔥 TOP NAVBAR */}
+      <div className="topbar">
+        <div className="logo">🚀 Migration Classifier</div>
+        <div className="nav-right">AWS Migration Tool</div>
+      </div>
 
-      <Upload onUpload={handleUpload} />
 
-      {data && (
-        <>
-          <Dashboard
-            summary={data.summary}
-            total={data.total}
-            onFilter={filterVMs}
-          />
+      {/* 🔥 MAIN CONTENT */}
+      <div className="app-container">
 
-          <VMTable data={filteredVMs} />
-        </>
-      )}
-    </div>
+        {/* HERO */}
+        <h1 className="hero-title">
+          Migration Readiness Dashboard
+        </h1>
+
+        <p className="hero-sub">
+          Upload your vSphere export to instantly classify workloads for AWS migration.
+        </p>
+
+        <Upload onUpload={handleUpload} />
+
+        {data && (
+          <>
+            <Dashboard
+              summary={data.summary}
+              total={data.total}
+              onFilter={filterVMs}
+            />
+
+            <VMTable data={filteredVMs} />
+          </>
+        )}
+
+      </div>
+    </>
   );
 }
 
