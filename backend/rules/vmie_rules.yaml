@@ -1,0 +1,20 @@
+windows:
+  supported_range: [2003, 2025]
+  clients:
+    - 7
+    - 8
+    - 8.1
+    - 10
+    - 11
+
+
+linux_families_supported:
+  - rhel
+  - centos
+  - oracle
+  - ubuntu
+  - debian
+  - rocky
+  - sles
+  - amazon linux
+  - fedora
