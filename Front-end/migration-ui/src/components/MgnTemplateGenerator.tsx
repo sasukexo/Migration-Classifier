@@ -58,6 +58,9 @@ const MgnTemplateGenerator = () => {
         <div className="card">
 
             <h2>MGN Template Generator</h2>
+              <p className="subtitle">
+        Generate AWS MGN-ready templates in seconds.
+    </p>
 
             <input
                 type="file"
