@@ -3,6 +3,7 @@ import Upload from "./components/Upload";
 import Dashboard from "./components/Dashboard";
 import VMTable from "./components/VMTable";
 import MgnTemplateGenerator from "./components/MgnTemplateGenerator";
+import { exportDashboard } from "./services/api";
 
 function App() {
 
@@ -10,6 +11,7 @@ function App() {
 
   const [data, setData] = useState<any>(null);
   const [filteredVMs, setFilteredVMs] = useState<any[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // ⭐ CRITICAL
 
   const handleUpload = (response: any) => {
     setData(response);
@@ -28,6 +30,31 @@ function App() {
     );
 
     setFilteredVMs(filtered);
+  };
+
+  // ⭐ DOWNLOAD FUNCTION INSIDE COMPONENT (VERY IMPORTANT)
+  const downloadDashboard = async () => {
+
+    if (!selectedFile) {
+      alert("Upload a CSV first.");
+      return;
+    }
+
+    try {
+
+      const blob = await exportDashboard(selectedFile);
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "migration_dashboard.xlsx";
+      a.click();
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to download report.");
+    }
   };
 
   return (
@@ -61,7 +88,11 @@ function App() {
               Upload your vSphere export to instantly classify workloads for AWS migration.
             </p>
 
-            <Upload onUpload={handleUpload} />
+            {/* ⭐ PASS FILE SETTER */}
+            <Upload 
+              onUpload={handleUpload}
+              setSelectedFile={setSelectedFile}
+            />
 
             {data && (
               <>
@@ -69,6 +100,7 @@ function App() {
                   summary={data.summary}
                   total={data.total}
                   onFilter={filterVMs}
+                  onDownload={downloadDashboard} // ⭐ PASS DOWNLOAD
                 />
 
                 <VMTable data={filteredVMs} />

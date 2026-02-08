@@ -16,3 +16,15 @@ export const uploadCSV = async (file: File) => {
 
   return response.data;
 };
+export const exportDashboard = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await API.post(
+    "/classifier/export-dashboard",
+    formData,
+    { responseType: "blob" }
+  );
+
+  return response.data;
+};

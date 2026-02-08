@@ -2,29 +2,58 @@ interface Props {
   summary: Record<string, number>;
   total: number;
   onFilter: (decision: string | null) => void;
+  onDownload: () => void;
 }
 
-export default function Dashboard({ summary, total, onFilter }: Props) {
+export default function Dashboard({
+  summary,
+  total,
+  onFilter,
+  onDownload,
+}: Props) {
   return (
-    <div style={styles.grid}>
-      <Card title="TOTAL" value={total} onClick={() => onFilter(null)} color="#444" />
+    <>
+      {/* DOWNLOAD BUTTON */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "20px",
+        }}
+      >
+        <button onClick={onDownload} style={styles.downloadBtn}>
+          ⬇ Download Migration Report
+        </button>
+      </div>
 
-      {Object.entries(summary).map(([key, value]) => (
+      <div style={styles.grid}>
         <Card
-          key={key}
-          title={key}
-          value={value}
-          onClick={() => onFilter(key)}
-          color={getColor(key)}
+          title="TOTAL"
+          value={total}
+          onClick={() => onFilter(null)}
+          color="#444"
         />
-      ))}
-    </div>
+
+        {Object.entries(summary).map(([key, value]) => (
+          <Card
+            key={key}
+            title={key}
+            value={value}
+            onClick={() => onFilter(key)}
+            color={getColor(key)}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
 function Card({ title, value, onClick, color }: any) {
   return (
-    <div onClick={onClick} style={{ ...styles.card, borderTop: `6px solid ${color}` }}>
+    <div
+      onClick={onClick}
+      style={{ ...styles.card, borderTop: `6px solid ${color}` }}
+    >
       <h4>{title}</h4>
       <h1>{value}</h1>
     </div>
@@ -45,7 +74,15 @@ const styles = {
     borderRadius: "12px",
     background: "white",
     boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-    transition: "0.2s",
+  },
+  downloadBtn: {
+    padding: "12px 20px",
+    borderRadius: "10px",
+    border: "none",
+    background: "#635bff",
+    color: "white",
+    fontWeight: 600,
+    cursor: "pointer",
   },
 };
 
@@ -57,25 +94,3 @@ function getColor(decision: string) {
 
   return "#607D8B";
 }
-
-const downloadDashboard = async () => {
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    const response = await fetch(
-        `${API_URL}/export-dashboard`,
-        {
-            method: "POST",
-            body: formData
-        }
-    );
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "migration_dashboard.xlsx";
-    a.click();
-};
