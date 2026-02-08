@@ -24,13 +24,13 @@ const MgnTemplateGenerator = () => {
         try {
 
             const response = await fetch(
-                `https://orthodox-marie-jeanne-aswinxo-b6a366c1.koyeb.app/template/generate-mgn-template
-`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
+    "https://orthodox-marie-jeanne-aswinxo-b6a366c1.koyeb.app/template/generate-mgn-template",
+    {
+        method: "POST",
+        body: formData,
+    }
+);
+
 
             if (!response.ok) {
                 throw new Error("Template generation failed");
