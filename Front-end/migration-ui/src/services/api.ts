@@ -8,7 +8,7 @@ export const uploadCSV = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await API.post("/classify", formData, {
+  const response = await API.post("/classifier/classify", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
