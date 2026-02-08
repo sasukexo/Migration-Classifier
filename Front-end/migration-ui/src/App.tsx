@@ -3,10 +3,9 @@ import Upload from "./components/Upload";
 import Dashboard from "./components/Dashboard";
 import VMTable from "./components/VMTable";
 import MgnTemplateGenerator from "./components/MgnTemplateGenerator";
+import Sidebar from "./components/sidebar";   // ✅ FIXED
+import Footer from "./components/footer";     // ✅ FIXED
 import { exportDashboard } from "./services/api";
-import Footer from "./components/Footer";
-
-
 
 function App() {
 
@@ -14,7 +13,7 @@ function App() {
 
   const [data, setData] = useState<any>(null);
   const [filteredVMs, setFilteredVMs] = useState<any[]>([]);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // ⭐ CRITICAL
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleUpload = (response: any) => {
     setData(response);
@@ -22,7 +21,6 @@ function App() {
   };
 
   const filterVMs = (decision: string | null) => {
-
     if (!decision) {
       setFilteredVMs(data.data);
       return;
@@ -35,7 +33,6 @@ function App() {
     setFilteredVMs(filtered);
   };
 
-  // ⭐ DOWNLOAD FUNCTION INSIDE COMPONENT (VERY IMPORTANT)
   const downloadDashboard = async () => {
 
     if (!selectedFile) {
@@ -44,7 +41,6 @@ function App() {
     }
 
     try {
-
       const blob = await exportDashboard(selectedFile);
 
       const url = window.URL.createObjectURL(blob);
@@ -54,73 +50,61 @@ function App() {
       a.download = "migration_dashboard.xlsx";
       a.click();
 
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("Failed to download report.");
     }
   };
 
   return (
-    <div className="app-wrapper">
+   <div className="app-shell">
 
-      {/* 🔥 TOP NAVBAR */}
-      <div className="topbar">
-        <div className="logo">Migration Platform</div>
+      {/* Sidebar */}
+      <Sidebar view={view} setView={setView} />
 
-        <div className="nav-right">
-          <button onClick={() => setView("classifier")}>
-            Classifier
-          </button>
+      {/* Main Area */}
+      <div className="main-area">
 
-          <button onClick={() => setView("template")}>
-            Template Generator
-          </button>
+        <div className="app-container">
+
+          {view === "classifier" && (
+            <>
+              <h1 className="hero-title">
+                Migration Readiness Dashboard
+              </h1>
+
+              <p className="hero-sub">
+                Upload your vSphere export to instantly classify workloads for AWS migration.
+              </p>
+
+              <Upload
+                onUpload={handleUpload}
+                setSelectedFile={setSelectedFile}
+              />
+
+              {data && (
+                <>
+                  <Dashboard
+                    summary={data.summary}
+                    total={data.total}
+                    onFilter={filterVMs}
+                    onDownload={downloadDashboard}
+                  />
+
+                  <VMTable data={filteredVMs} />
+                </>
+              )}
+            </>
+          )}
+
+          {view === "template" && (
+            <MgnTemplateGenerator />
+          )}
+
         </div>
-      </div>
 
-      {/* 🔥 MAIN CONTENT */}
-      <div className="app-container">
-
-        {/* ✅ CLASSIFIER VIEW */}
-        {view === "classifier" && (
-          <>
-            <h1 className="hero-title">
-              Migration Readiness Dashboard
-            </h1>
-
-            <p className="hero-sub">
-              Upload your vSphere export to instantly classify workloads for AWS migration.
-            </p>
-
-            {/* ⭐ PASS FILE SETTER */}
-            <Upload 
-              onUpload={handleUpload}
-              setSelectedFile={setSelectedFile}
-            />
-
-            {data && (
-              <>
-                <Dashboard
-                  summary={data.summary}
-                  total={data.total}
-                  onFilter={filterVMs}
-                  onDownload={downloadDashboard} // ⭐ PASS DOWNLOAD
-                />
-
-                <VMTable data={filteredVMs} />
-              </>
-            )}
-          </>
-        )}
-
-        {/* ✅ TEMPLATE GENERATOR VIEW */}
-        {view === "template" && (
-          <MgnTemplateGenerator />
-        )}
+        <Footer />
 
       </div>
-      <Footer />
-
     </div>
   );
 }

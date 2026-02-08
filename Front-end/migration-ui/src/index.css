@@ -10,15 +10,12 @@
   padding: 0;
 }
 
+
 /* ------------------------------
    DESIGN TOKENS
 ------------------------------ */
 
 :root {
-
-  /* colors */
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
 
   --bg: #f6f8fc;
   --card-bg: #ffffff;
@@ -28,16 +25,42 @@
 
   --border: #e5e7eb;
 
-  /* spacing */
-  --radius: 14px;
-  --shadow: 0 10px 25px rgba(0,0,0,0.05);
+  --sidebar-bg: #ffffff;
 
-  font-family: "Onest", sans-serif;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+
+  --hover: #eef2ff;
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+
+/* 🌙 DARK THEME */
+
+[data-theme="dark"] {
+
+  --bg: #0f172a;
+  --card-bg: #111827;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --border: #1f2937;
+
+  --sidebar-bg: #020617;
+
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+
+  --hover: #1e293b;
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 
 /* ------------------------------
-   ROOT LAYOUT (VERY IMPORTANT)
+   ROOT LAYOUT
 ------------------------------ */
 
 html, body, #root {
@@ -46,98 +69,104 @@ html, body, #root {
 
 body {
   margin: 0;
-
-  /* RESTORED gradient */
-  background: linear-gradient(
-    180deg,
-    #f8faff 0%,
-    #eef2ff 100%
-  );
-
+  background: var(--bg);
+  color: var(--text-main);
   font-family: "Onest", sans-serif;
 }
 
 
 /* ------------------------------
-   APP WRAPPER (Sticky Footer Magic)
+   MASTER LAYOUT
 ------------------------------ */
 
-.app-wrapper {
+.layout {
+  display: flex;
   min-height: 100vh;
+}
+
+
+/* ------------------------------
+   SIDEBAR
+------------------------------ */
+
+.sidebar {
+  width: 260px;
+  padding: 30px 20px;
+  height: 100vh;
+  position: sticky;
+  top: 0; 
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  box-shadow: 4px 0 20px rgba(0,0,0,0.03);
+}
+
+.sidebar-logo {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-item {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+  transition: 0.2s;
+  color: var(--text-main);
+}
+
+.nav-item:hover {
+  background: var(--hover);
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: white;
+}
+
+
+/* ------------------------------
+   MAIN AREA
+------------------------------ */
+
+.main-area {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 
 /* ------------------------------
-   TOPBAR
------------------------------- */
-
-.topbar {
-  height: 70px;
-  background: white;
-  border-bottom: 1px solid #e6e9f2;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 48px;
-
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.logo {
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.nav-right {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-
-/* nicer buttons */
-
-.nav-button {
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
-  background: var(--primary);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.nav-button:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-}
-
-.nav-button-active {
-  background: #4338ca;
-}
-
-
-/* ------------------------------
-   MAIN CONTAINER
+   CONTAINER
 ------------------------------ */
 
 .app-container {
-  flex: 1;                 /* pushes footer down */
-  max-width: 1100px;      /* 🔥 tightened from 1400 */
+  flex: 1;
+  max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: 70px 32px;     /* better breathing space */
+  padding: 70px 32px;
+}
+
+.app-wrapper {
+  flex: 1;
 }
 
 
+
 /* ------------------------------
-   HERO TEXT
+   HERO
 ------------------------------ */
 
 .hero-title {
@@ -159,21 +188,6 @@ body {
 
 
 /* ------------------------------
-   TYPOGRAPHY
------------------------------- */
-
-.app-title {
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 32px;
-}
-
-section {
-  margin-top: 32px;
-}
-
-
-/* ------------------------------
    BUTTONS
 ------------------------------ */
 
@@ -191,40 +205,35 @@ button {
 }
 
 button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(99,91,255,0.35);
+  background: var(--primary-hover);
+  transform: translateY(-2px);
 }
 
 
 /* ------------------------------
-   CARD (Reusable)
+   CARD
 ------------------------------ */
 
 .card {
-  width: 440px;
-  padding: 45px;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.07);
+  width: 460px;
+  padding: 48px;
+  border-radius: 20px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
 }
+
+
+/* ------------------------------
+   CENTER SCREEN
+------------------------------ */
 
 .center-screen {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 80px; /* optical centering */
+  padding-bottom: 80px;
 }
-
-
-
-
-/* ------------------------------
-   PAGE CENTERING
-   🔥 FIXED (no forced height)
------------------------------- */
-
-
 
 
 /* ------------------------------
@@ -250,7 +259,7 @@ td {
 }
 
 tr:hover {
-  background: #fafafa;
+  background: var(--hover);
 }
 
 
@@ -263,9 +272,11 @@ input {
   padding: 14px;
   margin-top: 10px;
   border-radius: 10px;
-  border: 1px solid #e2e6ef;
+  border: 1px solid var(--border);
   font-size: 14px;
   transition: 0.2s;
+  background: var(--card-bg);
+  color: var(--text-main);
 }
 
 input:focus {
@@ -281,9 +292,24 @@ input:focus {
 
 footer {
   text-align: center;
-  padding: 20px;
-  color: #6b7280;
+  padding: 22px;
+  color: var(--text-main);     /* reacts to dark mode */
   font-size: 14px;
-  border-top: 1px solid #eee;
-  background: #fafafa;
+  border-top: 1px solid var(--border);
+  background: var(--card-bg);
+   opacity: 0.85;
+   margin-left: 0;
 }
+
+/* Heart styling */
+.heart {
+  color: #ef4444;
+}
+/* MASTER APP SHELL */
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+}
+
+

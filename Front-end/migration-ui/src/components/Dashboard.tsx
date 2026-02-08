@@ -13,15 +13,12 @@ export default function Dashboard({
 }: Props) {
   return (
     <>
-      {/* DOWNLOAD BUTTON */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "20px",
-        }}
-      >
-        <button onClick={onDownload} style={styles.downloadBtn}>
+      <div style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        marginBottom: "20px",
+      }}>
+        <button onClick={onDownload}>
           ⬇ Download Migration Report
         </button>
       </div>
@@ -31,7 +28,7 @@ export default function Dashboard({
           title="TOTAL"
           value={total}
           onClick={() => onFilter(null)}
-          color="#444"
+          color="#64748b"
         />
 
         {Object.entries(summary).map(([key, value]) => (
@@ -52,7 +49,12 @@ function Card({ title, value, onClick, color }: any) {
   return (
     <div
       onClick={onClick}
-      style={{ ...styles.card, borderTop: `6px solid ${color}` }}
+      style={{
+        ...styles.card,
+        borderTop: `6px solid ${color}`,
+        background: "var(--card-bg)",
+        color: "var(--text-main)"
+      }}
     >
       <h4>{title}</h4>
       <h1>{value}</h1>
@@ -69,28 +71,19 @@ const styles = {
   },
   card: {
     cursor: "pointer",
-    padding: "20px",
-    minWidth: "150px",
-    borderRadius: "12px",
-    background: "white",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-  },
-  downloadBtn: {
-    padding: "12px 20px",
-    borderRadius: "10px",
-    border: "none",
-    background: "#635bff",
-    color: "white",
-    fontWeight: 600,
-    cursor: "pointer",
+    padding: "24px",
+    minWidth: "180px",
+    borderRadius: "14px",
+    boxShadow: "var(--shadow)",
+    transition: "0.2s"
   },
 };
 
 function getColor(decision: string) {
-  if (decision.includes("MGN")) return "#4CAF50";
-  if (decision.includes("IMPORT")) return "#FF9800";
-  if (decision.includes("ACTION")) return "#F44336";
-  if (decision.includes("REBUILD")) return "#9C27B0";
+  if (decision.includes("MGN")) return "#22c55e";
+  if (decision.includes("IMPORT")) return "#f59e0b";
+  if (decision.includes("ACTION")) return "#ef4444";
+  if (decision.includes("REBUILD")) return "#a855f7";
 
-  return "#607D8B";
+  return "#64748b";
 }
