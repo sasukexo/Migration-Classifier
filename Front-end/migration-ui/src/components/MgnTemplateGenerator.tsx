@@ -24,7 +24,7 @@ const MgnTemplateGenerator = () => {
         try {
 
             const response = await fetch(
-                `http://127.0.0.1:8000/template/generate-mgn-template`,
+                `orthodox-marie-jeanne-aswinxo-b6a366c1.koyeb.app/template/generate-mgn-template`,
                 {
                     method: "POST",
                     body: formData,
