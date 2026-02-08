@@ -1,3 +1,0 @@
-account-id,region,server:user-provided-id,server:platform,server:primary-ip
-123456789012,ap-south-1,prod-web-01,LINUX,10.0.0.15
-123456789012,ap-south-1,prod-db-01,WINDOWS,10.0.0.20

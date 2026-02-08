@@ -71,15 +71,23 @@ class TemplateMapper:
     # -----------------------------
 
     def _extract_ipv4(self, ip_field: str) -> str | None:
-        """
-        Extract first valid IPv4 from a messy field.
-        Ignores IPv6 automatically.
-        """
+    # """
+    # Extract FIRST valid IPv4 from messy fields.
+
+    # Handles:
+    # - multiple IPs
+    # - comma separated
+    # - semicolon separated
+    # - spaces
+    # - IPv6 mixed in
+    # """
 
         if not ip_field:
             return None
 
-        ipv4_pattern = r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b"
+        ip_field = str(ip_field)
+
+        ipv4_pattern = r"\b(?:\d{1,3}\.){3}\d{1,3}\b"
         matches = re.findall(ipv4_pattern, ip_field)
 
         return matches[0] if matches else None
