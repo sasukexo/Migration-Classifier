@@ -3,6 +3,10 @@ import pandas as pd
 from app.classifier import classify_os
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.template_routes import router as template_router
+from app.api.classifier_routes import router as classifier_router
+
+
+
 
 
 # ✅ CREATE APP FIRST
@@ -21,6 +25,7 @@ app.add_middleware(
 
 # ✅ INCLUDE ROUTERS AFTER APP EXISTS
 app.include_router(template_router, prefix="/template")
+app.include_router(classifier_router, prefix="/classifier")
 
 
 @app.post("/classify")

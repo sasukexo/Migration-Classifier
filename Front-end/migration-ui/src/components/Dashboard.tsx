@@ -57,3 +57,25 @@ function getColor(decision: string) {
 
   return "#607D8B";
 }
+
+const downloadDashboard = async () => {
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const response = await fetch(
+        `${API_URL}/export-dashboard`,
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "migration_dashboard.xlsx";
+    a.click();
+};
