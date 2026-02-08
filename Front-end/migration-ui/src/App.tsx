@@ -34,7 +34,7 @@ function App() {
     <>
       {/* 🔥 TOP NAVBAR */}
       <div className="topbar">
-        <div className="logo">🚀 Migration Platform</div>
+        <div className="logo">Migration Platform</div>
 
         <div className="nav-right">
           <button onClick={() => setView("classifier")}>
