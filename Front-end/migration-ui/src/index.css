@@ -11,8 +11,7 @@
 }
 
 /* ------------------------------
-   DESIGN TOKENS (VERY IMPORTANT)
-   This is what real apps use.
+   DESIGN TOKENS
 ------------------------------ */
 
 :root {
@@ -31,34 +30,53 @@
 
   /* spacing */
   --radius: 14px;
-  --shadow:
-    0 10px 25px rgba(0,0,0,0.05);
+  --shadow: 0 10px 25px rgba(0,0,0,0.05);
 
-font-family: "Onest", sans-serif;
+  font-family: "Onest", sans-serif;
 }
 
+
 /* ------------------------------
-   BODY
+   ROOT LAYOUT (VERY IMPORTANT)
 ------------------------------ */
+
+html, body, #root {
+  height: 100%;
+}
 
 body {
   margin: 0;
 
+  /* RESTORED gradient */
   background: linear-gradient(
     180deg,
     #f8faff 0%,
     #eef2ff 100%
   );
 
- font-family: "Onest", sans-serif;
-    background: #f5f7fb;
+  font-family: "Onest", sans-serif;
 }
 
-.topbar {
 
+/* ------------------------------
+   APP WRAPPER (Sticky Footer Magic)
+------------------------------ */
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ------------------------------
+   TOPBAR
+------------------------------ */
+
+.topbar {
   height: 70px;
-   background: white;
-    border-bottom: 1px solid #e6e9f2;
+  background: white;
+  border-bottom: 1px solid #e6e9f2;
 
   display: flex;
   align-items: center;
@@ -71,56 +89,56 @@ body {
   z-index: 100;
 }
 
-
-.subtitle {
-    color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 22px;
-}
-
-
 .logo {
   font-weight: 700;
   font-size: 20px;
 }
 
 .nav-right {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-direction: row;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* nicer buttons */
+
+.nav-button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.nav-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
 }
 
 .nav-button-active {
-    background: #635bff;
-    color: white;
-}
-
-.nav-button {
-    padding: 10px 18px;
-    border-radius: 10px;
-    border: none;
-    background: #635bff;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    font-weight: 600;
+  background: #4338ca;
 }
 
 
-.story-script-regular {
-  font-family: "Onest", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-
+/* ------------------------------
+   MAIN CONTAINER
+------------------------------ */
 
 .app-container {
-  max-width: 1400px;
-  margin: auto;
-  padding: 60px 30px;
+  flex: 1;                 /* pushes footer down */
+  max-width: 1100px;      /* 🔥 tightened from 1400 */
+  width: 100%;
+  margin: 0 auto;
+  padding: 70px 32px;     /* better breathing space */
 }
+
+
+/* ------------------------------
+   HERO TEXT
+------------------------------ */
 
 .hero-title {
   font-size: 42px;
@@ -129,14 +147,15 @@ body {
 
 .hero-sub {
   margin-top: 10px;
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 40px;
 }
 
-
-/* ------------------------------
-   APP CONTAINER
------------------------------- */
+.subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 22px;
+}
 
 
 /* ------------------------------
@@ -149,69 +168,67 @@ body {
   margin-bottom: 32px;
 }
 
-/* subtle section spacing */
 section {
   margin-top: 32px;
 }
 
+
 /* ------------------------------
    BUTTONS
 ------------------------------ */
-.form-button {
-    width: 100%;
-}
-
 
 button {
-    
-    padding: 14px;
-    margin-top: 18px;
-    border-radius: 12px;
-    border: none;
-    background: #635bff;
-    color: white;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.25s;
+  padding: 14px;
+  margin-top: 18px;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
 button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(99,91,255,0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(99,91,255,0.35);
 }
-
-h2 {
-    margin-bottom: 8px;
-    font-weight: 650;
-}
-
 
 
 /* ------------------------------
-   CARD STYLE (Reusable!)
+   CARD (Reusable)
 ------------------------------ */
 
 .card {
-    width: 440px;
-    padding: 45px;
-    border-radius: 18px;
-    background: white;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.07);
+  width: 440px;
+  padding: 45px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.07);
+}
+
+.center-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 80px; /* optical centering */
 }
 
 
-
-.page {
-    height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 
 /* ------------------------------
-   TABLE BASE
+   PAGE CENTERING
+   🔥 FIXED (no forced height)
+------------------------------ */
+
+
+
+
+/* ------------------------------
+   TABLE
 ------------------------------ */
 
 table {
@@ -232,24 +249,41 @@ td {
   border-bottom: 1px solid var(--border);
 }
 
-input {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border-radius: 10px;
-    border: 1px solid #e2e6ef;
-    font-size: 14px;
-    transition: 0.2s;
+tr:hover {
+  background: #fafafa;
 }
 
+
+/* ------------------------------
+   INPUTS
+------------------------------ */
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #e2e6ef;
+  font-size: 14px;
+  transition: 0.2s;
+}
 
 input:focus {
-    outline: none;
-    border-color: #635bff;
-    box-shadow: 0 0 0 3px rgba(99,91,255,0.15);
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,91,255,0.15);
 }
 
 
-tr:hover {
+/* ------------------------------
+   FOOTER
+------------------------------ */
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-size: 14px;
+  border-top: 1px solid #eee;
   background: #fafafa;
 }

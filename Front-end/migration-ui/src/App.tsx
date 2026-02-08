@@ -4,6 +4,9 @@ import Dashboard from "./components/Dashboard";
 import VMTable from "./components/VMTable";
 import MgnTemplateGenerator from "./components/MgnTemplateGenerator";
 import { exportDashboard } from "./services/api";
+import Footer from "./components/Footer";
+
+
 
 function App() {
 
@@ -58,7 +61,8 @@ function App() {
   };
 
   return (
-    <>
+    <div className="app-wrapper">
+
       {/* 🔥 TOP NAVBAR */}
       <div className="topbar">
         <div className="logo">Migration Platform</div>
@@ -115,7 +119,9 @@ function App() {
         )}
 
       </div>
-    </>
+      <Footer />
+
+    </div>
   );
 }
 

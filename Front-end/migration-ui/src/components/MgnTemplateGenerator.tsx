@@ -52,10 +52,11 @@ const MgnTemplateGenerator = () => {
         setLoading(false);
     };
 
-    return (
-    <div className="page">
+   return (
+    <div className="center-screen">
 
         <div className="card">
+
 
             <h2>MGN Template Generator</h2>
               <p className="subtitle">
