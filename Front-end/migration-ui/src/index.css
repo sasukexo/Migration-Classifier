@@ -35,6 +35,13 @@
 }
 
 
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
 /* 🌙 DARK THEME */
 
 [data-theme="dark"] {
@@ -171,10 +178,14 @@ body {
 ------------------------------ */
 
 .app-container {
-  max-width: 1400px; /* dashboard width */
+  width: 100%;
+  max-width: 1400px;
+
   margin: 0 auto;
-  padding: 60px 40px;
+
+  padding: clamp(20px, 4vw, 60px);
 }
+
 
 
 /* ------------------------------
@@ -227,7 +238,9 @@ button:hover {
 ------------------------------ */
 
 .card {
-  width: 460px;
+  width: 100%;
+  max-width: 460px;
+
   padding: 48px;
   border-radius: 20px;
   background: var(--card-bg);
@@ -313,6 +326,24 @@ footer {
 
 
 /* heart */
-.heart {
-  color: #ef4444;
+@media (max-width: 900px) {
+
+  .sidebar {
+    position: fixed;
+    width: 70px;   /* collapsed sidebar */
+    padding: 20px 10px;
+  }
+
+  .sidebar-logo {
+    font-size: 16px;
+  }
+
+  .nav-item {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .right-column {
+    margin-left: 70px; /* match sidebar */
+  }
 }
