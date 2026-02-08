@@ -53,7 +53,9 @@ const MgnTemplateGenerator = () => {
     };
 
     return (
-        <div>
+    <div className="page">
+
+        <div className="card">
 
             <h2>MGN Template Generator</h2>
 
@@ -65,15 +67,11 @@ const MgnTemplateGenerator = () => {
                 }
             />
 
-            <br /><br />
-
             <input
                 placeholder="AWS Account ID"
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
             />
-
-            <br /><br />
 
             <input
                 placeholder="Region"
@@ -81,14 +79,15 @@ const MgnTemplateGenerator = () => {
                 onChange={(e) => setRegion(e.target.value)}
             />
 
-            <br /><br />
-
             <button onClick={handleUpload} disabled={loading}>
                 {loading ? "Generating..." : "Generate Template"}
             </button>
 
         </div>
-    );
+
+    </div>
+);
+
 };
 
 export default MgnTemplateGenerator;
