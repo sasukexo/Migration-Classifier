@@ -1,4 +1,4 @@
-
+xlsxwriter
 fastapi
 uvicorn
 pandas
