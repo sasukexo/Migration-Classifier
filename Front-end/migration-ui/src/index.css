@@ -34,7 +34,7 @@
   --shadow:
     0 10px 25px rgba(0,0,0,0.05);
 
-  font-family: Inter, system-ui, sans-serif;
+font-family: "Story Script", sans-serif;
 }
 
 /* ------------------------------
@@ -50,7 +50,7 @@ body {
     #eef2ff 100%
   );
 
-  font-family: 'Inter', sans-serif;
+ font-family: "Story Script", sans-serif;
     background: #f5f7fb;
 }
 
