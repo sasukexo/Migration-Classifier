@@ -104,6 +104,9 @@ body {
     color: white;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap;
+    padding: 10px 22px;
+    
 }
 
 
@@ -149,9 +152,13 @@ section {
 /* ------------------------------
    BUTTONS
 ------------------------------ */
+.form-button {
+    width: 100%;
+}
+
 
 button {
-    width: 100%;
+    
     padding: 14px;
     margin-top: 18px;
     border-radius: 12px;
