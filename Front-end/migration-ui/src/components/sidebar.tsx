@@ -24,7 +24,7 @@ export default function Sidebar({ view, setView }: Props) {
     <div className="sidebar">
 
       <div className="sidebar-logo">
-        🚀 Migration Platform
+         Migration Platform
       </div>
 
       <nav className="sidebar-nav">
@@ -33,14 +33,14 @@ export default function Sidebar({ view, setView }: Props) {
           className={view === "classifier" ? "nav-item active" : "nav-item"}
           onClick={() => setView("classifier")}
         >
-          📊 Classifier
+          Classifier
         </button>
 
         <button
           className={view === "template" ? "nav-item active" : "nav-item"}
           onClick={() => setView("template")}
         >
-          ⚡ Template Generator
+           Template Generator
         </button>
 
       </nav>

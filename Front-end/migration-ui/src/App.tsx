@@ -56,14 +56,16 @@ function App() {
   };
 
   return (
-   <div className="app-shell">
+  <div className="app-shell">
 
-      {/* Sidebar */}
-      <Sidebar view={view} setView={setView} />
+    {/* Sidebar */}
+    <Sidebar view={view} setView={setView} />
 
-      {/* Main Area */}
+    {/* RIGHT COLUMN */}
+    <div className="right-column">
+
+      {/* Main Content */}
       <div className="main-area">
-
         <div className="app-container">
 
           {view === "classifier" && (
@@ -101,12 +103,15 @@ function App() {
           )}
 
         </div>
-
-        <Footer />
-
       </div>
+
+      {/* Footer NOW lives in right column */}
+      <Footer />
+
     </div>
-  );
+  </div>
+);
+
 }
 
 export default App;
