@@ -85,8 +85,22 @@ body {
 }
 
 .nav-right {
-  color: #6b7280;
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
+
+.nav-button-active {
+    background: #635bff;
+    color: white;
+}
+
+.nav-button {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+
 
 .app-container {
   max-width: 1400px;
