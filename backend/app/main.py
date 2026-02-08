@@ -2,11 +2,14 @@ from fastapi import FastAPI, UploadFile, File
 import pandas as pd
 from app.classifier import classify_os
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.template_routes import router as template_router
 
 
+# ✅ CREATE APP FIRST
 app = FastAPI()
 
 
+# ✅ ADD MIDDLEWARE
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # fine for internal tools
@@ -14,6 +17,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ✅ INCLUDE ROUTERS AFTER APP EXISTS
+app.include_router(template_router, prefix="/template")
 
 
 @app.post("/classify")
@@ -26,7 +33,6 @@ async def classify(file: UploadFile = File(...)):
     for _, row in df.iterrows():
 
         os_value = str(row.get("Guest OS", ""))
-
 
         classification = classify_os(os_value)
 
